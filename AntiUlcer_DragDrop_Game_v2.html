@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Anti-Ulcer Agents Matching Game (v2)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9fafb; padding: 20px; }
+    h1 { text-align: center; }
+    .controls { text-align: center; margin: 10px 0 20px; }
+    .container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .drugs, .descriptions { padding: 10px; background: #fff; border-radius: 8px; }
+    .item { padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; cursor: move; background: #fefefe; }
+    .matched { background: #bbf7d0 !important; border-color: #22c55e !important; }
+    .dropzone { min-height: 50px; padding: 8px; margin: 5px 0; border: 2px dashed #aaa; border-radius: 5px; background: #f9fafb; }
+    .dropzone.matched { background: #dcfce7; border-color: #22c55e; }
+    .hidden { display: none; }
+    .error { color: #b91c1c; background: #fee2e2; border: 1px solid #fca5a5; padding: 10px; border-radius: 6px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+
+<h1>🎯 Anti-Ulcer Agents Matching Game</h1>
+<div class="controls">
+  <button id="shuffleBtn">🔀 Reshuffle</button>
+  <span id="status" style="margin-left:10px; font-size: 0.9rem; color:#374151;">v2 loaded</span>
+</div>
+
+<noscript>
+  <div class="error"><b>JavaScript is disabled.</b> Please enable JavaScript to play the game.</div>
+</noscript>
+
+<div id="errorBox" class="error hidden"></div>
+
+<div class="container">
+  <div class="drugs">
+    <h2>🧪 Drugs</h2>
+    <div id="drug-list"></div>
+  </div>
+  <div class="descriptions">
+    <h2>📖 Descriptions</h2>
+    <div id="desc-list"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  function showError(msg) {
+    var box = document.getElementById('errorBox');
+    box.textContent = "Error: " + msg;
+    box.classList.remove('hidden');
+    console.error(msg);
+  }
+
+  function init() {
+    try {
+      const drugs = [
+        { name: "Cimetidine", desc: "H2 antagonist; decreases gastric acid; CYP450 inhibitor, gynecomastia risk." },
+        { name: "Famotidine", desc: "H2 antagonist; decreases gastric acid; minimal side effects, no CYP inhibition." },
+        { name: "Nizatidine", desc: "H2 antagonist; similar to famotidine, rarely used." },
+
+        { name: "Lansoprazole", desc: "PPI; irreversibly blocks H+/K+ ATPase; long-lasting acid suppression." },
+        { name: "Dexlansoprazole", desc: "PPI; dual delayed-release for prolonged effect." },
+        { name: "Omeprazole", desc: "PPI; classic, strong acid suppression." },
+        { name: "Esomeprazole", desc: "PPI; S-isomer of omeprazole, improved kinetics." },
+        { name: "Pantoprazole", desc: "PPI; IV option for stress ulcer prophylaxis." },
+        { name: "Rabeprazole", desc: "PPI; potent acid suppression." },
+
+        { name: "Vonoprazan", desc: "P-CAB; blocks H+/K+ ATPase at K+ site; used with antibiotics for H. pylori." },
+
+        { name: "Sucralfate", desc: "Surface agent; coats ulcer base, needs acidic pH; protective barrier." },
+
+        { name: "Misoprostol", desc: "PGE1 analog; increases mucus/bicarb, decreases acid; prevents NSAID ulcers, abortifacient." },
+
+        { name: "Bismuth subsalicylate", desc: "Bismuth compound; coats ulcers, anti-H. pylori; black stool/tongue." }
+      ];
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      const drugList = document.getElementById("drug-list");
+      const descList = document.getElementById("desc-list");
+      if (!drugList || !descList) {
+        showError("Missing required containers in HTML.");
+        return;
+      }
+
+      function render() {
+        drugList.innerHTML = "";
+        descList.innerHTML = "";
+
+        const shuffledDrugs = shuffle(drugs.slice());
+
+        shuffledDrugs.forEach(drug => {
+          const div = document.createElement("div");
+          div.className = "item";
+          div.textContent = drug.name;
+          div.draggable = true;
+          div.id = "drug-" + drug.name.replace(/\\s+/g, "_");
+          div.addEventListener("dragstart", e => {
+            e.dataTransfer.setData("text/plain", drug.name);
+          });
+          drugList.appendChild(div);
+        });
+
+        drugs.forEach(drug => {
+          const dz = document.createElement("div");
+          dz.className = "dropzone";
+          dz.textContent = drug.desc;
+          dz.dataset.drug = drug.name;
+          dz.addEventListener("dragover", e => e.preventDefault());
+          dz.addEventListener("drop", e => {
+            e.preventDefault();
+            const draggedDrug = e.dataTransfer.getData("text/plain");
+            if (draggedDrug === dz.dataset.drug) {
+              const el = document.getElementById("drug-" + draggedDrug.replace(/\\s+/g, "_"));
+              if (el) el.classList.add("matched");
+              dz.classList.add("matched");
+            }
+          });
+          descList.appendChild(dz);
+        });
+
+        document.getElementById('status').textContent = "Ready • " + new Date().toLocaleTimeString();
+      }
+
+      // Initial render
+      render();
+
+      // Reshuffle button
+      const btn = document.getElementById("shuffleBtn");
+      if (btn) btn.addEventListener("click", render);
+
+    } catch (err) {
+      showError(err && err.message ? err.message : String(err));
+    }
+  }
+
+  // Ensure DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
