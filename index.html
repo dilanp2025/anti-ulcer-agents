@@ -56,23 +56,23 @@
     try {
       const drugs = [
         { name: "Cimetidine", desc: "H2 antagonist; decreases gastric acid; CYP450 inhibitor, gynecomastia risk." },
-        { name: "Famotidine", desc: "H2 antagonist; decreases gastric acid; minimal side effects, no CYP inhibition." },
+        { name: "Famotidine", desc: "H2 antagonist; decreases gastric acid; minimal side effects, no CYP inhibition; use for moderate symptoms in pregnant pts without H.Pylori" },
         { name: "Nizatidine", desc: "H2 antagonist; similar to famotidine, rarely used." },
 
-        { name: "Lansoprazole", desc: "PPI; irreversibly blocks H+/K+ ATPase; long-lasting acid suppression." },
+        { name: "Lansoprazole", desc: "PPI; irreversibly blocks H+/K+ ATPase; use for severe symptoms in pregnant pts without H.pylori." },
         { name: "Dexlansoprazole", desc: "PPI; dual delayed-release for prolonged effect." },
-        { name: "Omeprazole", desc: "PPI; classic, strong acid suppression." },
+        { name: "Omeprazole", desc: "PPI; CYP450 inhibitor" },
         { name: "Esomeprazole", desc: "PPI; S-isomer of omeprazole, improved kinetics." },
         { name: "Pantoprazole", desc: "PPI; IV option for stress ulcer prophylaxis." },
         { name: "Rabeprazole", desc: "PPI; potent acid suppression." },
 
         { name: "Vonoprazan", desc: "P-CAB; blocks H+/K+ ATPase at K+ site; used with antibiotics for H. pylori." },
 
-        { name: "Sucralfate", desc: "Surface agent; coats ulcer base, needs acidic pH; protective barrier." },
+        { name: "Sucralfate", desc: "Surface agent; coats ulcer base, does not affect pH; protective barrier." },
 
-        { name: "Misoprostol", desc: "PGE1 analog; increases mucus/bicarb, decreases acid; prevents NSAID ulcers, abortifacient." },
+        { name: "Misoprostol", desc: "PGE1 analog; increases mucus/bicarb, decreases acid; prevents NSAID ulcers." },
 
-        { name: "Bismuth subsalicylate", desc: "Bismuth compound; coats ulcers, anti-H. pylori; black stool/tongue." }
+        { name: "Bismuth subsalicylate", desc: "Bismuth compound; coats ulcers, anti-H. pylori; black stool. take 1 hr before or 2 hrs after other medications" }
       ];
 
       function shuffle(array) {
